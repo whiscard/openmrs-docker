@@ -4,19 +4,21 @@ OpenMRS is an open source medical records system that is deployed around the wor
 
 # OpenHMIS Docker Images
 
-These docker images will install the OpenMRS platform, OpenMRS reference application, and the latest OpenHMIS modules. The images will also optionally create a demo database with a limited amount of patients, observations, and the minimal configuration data needed for the OpenHMIS modules to be used.
+These docker images will install the OpenMRS platform, OpenMRS reference application, and the latest OpenHMIS modules. The images will also optionally create a demo database with a limited amount of patients, observations, and the minimal configuration data needed for the OpenHMIS modules to be used. The naming convention for the tags uses the following format: `<Omrs Platform Version>_<Ref App Version>`. For images that do not include the reference application modules no second version number is defined.
+
+Branches have been created to track the last released version of the major and minor releases. These branches do not include the minor and/or patch version number.
 
 The images are tagged by OpenMRS platform and reference application versions:
 
-    OpenMRS Platform 1.11.5 with Reference App 2.3.1 (tag: plat1.11.5_ref2.3.1)
-    OpenMRS Platform 1.11.5 without the reference app (tag: plat1.11.5)
-    OpenMRS Platform 1.9.9 without the reference app (tag: plat1.9.9)
+    OpenMRS Platform 1.11.5 with Reference App 2.3.1 (tag: 1.11.5_2.3.1)
+    OpenMRS Platform 1.11.5 without the reference app (tag: 1.11.5)
+    OpenMRS Platform 1.9.9 without the reference app (tag: 1.9.9)
 
 To get the latest release, the following tags can be used:
 
-    OpenMRS Platform 1.11.x with Reference App 2.x (tag: plat1.11.x_ref2.x)
-    OpenMRS Platform 1.11.x without the reference app (tag: plat1.11.x)
-    OpenMRS Platform 1.9.x without the reference app (tag: plat1.9.x)
+    Latest released OpenMRS Platform 1.11.x with the latest released Reference App 2.x (tag: 1.11_2)
+    Latest released OpenMRS Platform 1.11.x without the reference app (tag: 1.11)
+    Latest released OpenMRS Platform 1.9.x without the reference app (tag: 1.9)
 
 The `latest` tag will always be the current plat1.11.x_ref2.x image.
 
