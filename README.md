@@ -20,7 +20,7 @@ To get the latest release, the following tags can be used:
     Latest released OpenMRS Platform 1.11.x without the reference app (tag: 1.11)
     Latest released OpenMRS Platform 1.9.x without the reference app (tag: 1.9)
 
-The `latest` tag will always be the current plat1.11.x_ref2.x image.
+The `latest` tag will always be the image for the last released platform with the last released reference application.
 
 # How to Use the OpenHMIS Images
 
