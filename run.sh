@@ -4,12 +4,12 @@
 if [ -d "/root/temp" ]; then
 # ------------ Begin Load Database ------------
 
+# Only set these variables if we're loading the demo data
 if [ -z ${DEMO_DATA+x} ]; then
     echo "Demo data will not be loaded (specify the DEMO_DATA parameter to load demo data).";
 else
     # ------------ Begin Configure Variables -----------------
 
-    # Only set these variables if we're loading the demo data
     if [ -z ${DB_USER+x} ]; then
         echo "The mysql user parameter (DB_USER) must defined.";
         exit 1
@@ -17,6 +17,13 @@ else
     if [ -z ${DB_PASS+x} ]; then
         echo "The mysql password parameter (DB_PASS) must be defined.";
         exit 1
+    fi
+
+    if [ -z ${MYSQL_HOST+x} ]; then
+        MYSQL_HOST=${MYSQL_PORT_3306_TCP_ADDR}
+    fi
+    if [ -z ${MYSQL_PORT+x} ]; then
+        MYSQL_PORT=${MYSQL_PORT_3306_TCP_PORT}
     fi
 
     if [ -z ${DB_NAME+x} ]; then
@@ -40,13 +47,13 @@ else
     # ------------ End Configure Variables -----------------
 
     # Check if the database already exists. If it does then do not create or import data but do ensure that the user has access
-    if mysql -h $MYSQL_PORT_3306_TCP_ADDR -P $MYSQL_PORT_3306_TCP_PORT -u $DB_USER --password=$DB_PASS -e "USE ${DB_NAME}"; then
+    if mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $DB_USER --password=$DB_PASS -e "USE ${DB_NAME}"; then
         echo "Database '${DB_NAME}' already exists. Database creation and import will not occur."
     else
         # Create database
         echo "Creating database..."
         echo "CREATE SCHEMA ${DB_NAME} DEFAULT CHARACTER SET utf8;" >> /root/temp/db/create_db.sql
-        mysql -h $MYSQL_PORT_3306_TCP_ADDR -P $MYSQL_PORT_3306_TCP_PORT -u $DB_USER --password=$DB_PASS < /root/temp/db/create_db.sql
+        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $DB_USER --password=$DB_PASS < /root/temp/db/create_db.sql
         rm /root/temp/db/*.sql
         echo "Database created."
 
@@ -57,7 +64,7 @@ else
 
         for script in $SCRIPTS
         do
-            mysql -h $MYSQL_PORT_3306_TCP_ADDR -P $MYSQL_PORT_3306_TCP_PORT -u $DB_USER --password=$DB_PASS ${DB_NAME}  < $script
+            mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $DB_USER --password=$DB_PASS ${DB_NAME}  < $script
         done
         echo "Demo data loaded."
     fi
@@ -65,12 +72,12 @@ else
     # Create OpenMRS db user
     echo "Creating OpenMRS user..."
     echo "GRANT ALL ON ${DB_NAME}.* to '${OPENMRS_DB_USER}'@'%' identified by '${OPENMRS_DB_PASS}';" >> /root/temp/db/create_openmrs_user.sql
-    mysql -h $MYSQL_PORT_3306_TCP_ADDR -P $MYSQL_PORT_3306_TCP_PORT -u $DB_USER --password=$DB_PASS < /root/temp/db/create_openmrs_user.sql
+    mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $DB_USER --password=$DB_PASS < /root/temp/db/create_openmrs_user.sql
     rm /root/temp/db/*.sql
     echo "OpenMRS user created."
 
     # Write openmrs-runtime.properties file with linked database settings
-    OPENMRS_CONNECTION_URL="connection.url=jdbc\:mysql\://$MYSQL_PORT_3306_TCP_ADDR\:$MYSQL_PORT_3306_TCP_PORT/${DB_NAME}?autoReconnect\=true&sessionVariables\=default_storage_engine\=InnoDB&useUnicode\=true&characterEncoding\=UTF-8"
+    OPENMRS_CONNECTION_URL="connection.url=jdbc\:mysql\://$MYSQL_HOST\:$MYSQL_PORT/${DB_NAME}?autoReconnect\=true&sessionVariables\=default_storage_engine\=InnoDB&useUnicode\=true&characterEncoding\=UTF-8"
     echo "${OPENMRS_CONNECTION_URL}" >> /root/temp/openmrs-runtime.properties
     echo "connection.username=${OPENMRS_DB_USER}" >> /root/temp/openmrs-runtime.properties
     echo "connection.password=${OPENMRS_DB_PASS}" >> /root/temp/openmrs-runtime.properties
