@@ -4,33 +4,33 @@ OpenMRS is an open source medical records system that is deployed around the wor
 
 # OpenHMIS Docker Images
 
-These docker images will install the OpenMRS platform, OpenMRS reference application, and the latest OpenHMIS modules. The images will also optionally create a demo database with a limited amount of patients, observations, and the minimal configuration data needed for the OpenHMIS modules to be used.
+These docker images will install the OpenMRS platform, OpenMRS reference application, and the latest OpenHMIS modules. The images will also optionally create a demo database with a limited amount of patients, observations, and the minimal configuration data needed for the OpenHMIS modules to be used. The naming convention for the tags uses the following format: `<Omrs Platform Version>_<Ref App Version>`. For images that do not include the reference application modules no second version number is defined.
+
+Branches have been created to track the last released version of the major and minor releases. These branches do not include the minor and/or patch version number.
 
 The images are tagged by OpenMRS platform and reference application versions:
 
-    OpenMRS Platform 1.11.5 with Reference App 2.3.1 (tag: plat1.11.5_ref2.3.1)
-    OpenMRS Platform 1.11.5 without the reference app (tag: plat1.11.5)
-    OpenMRS Platform 1.9.9 without the reference app (tag: plat1.9.9)
+    OpenMRS Platform 1.11.5 with Reference App 2.3.1 (tag: 1.11.5_2.3.1)
+    OpenMRS Platform 1.11.5 without the reference app (tag: 1.11.5)
+    OpenMRS Platform 1.9.9 without the reference app (tag: 1.9.9)
 
 To get the latest release, the following tags can be used:
 
-    OpenMRS Platform 1.11.x with Reference App 2.x (tag: plat1.11.x_ref2.x)
-    OpenMRS Platform 1.11.x without the reference app (tag: plat1.11.x)
-    OpenMRS Platform 1.9.x without the reference app (tag: plat1.9.x)
+    Latest released OpenMRS Platform 1.11.x with the latest released Reference App 2.x (tag: 1.11_2)
+    Latest released OpenMRS Platform 1.11.x without the reference app (tag: 1.11)
+    Latest released OpenMRS Platform 1.9.x without the reference app (tag: 1.9)
 
-The `latest` tag will always be the current plat1.11.x_ref2.x image.
+The `latest` tag will always be the image for the last released platform with the last released reference application.
 
 # How to Use the OpenHMIS Images
 
 ## Setting up MySQL
 
-This image assumes that MySQL will be running in separate server or another image. To set up a MySQL instance via docker, first create a docker data value for the MySQL data files:
+This image assumes that MySQL will be running in separate server or another image. To set up a MySQL instance via docker:
 
-    docker create --name mysql-data arungupta/mysql-data-container
+    docker run --name openmrs-mysql -v <LOCAL_PATH>:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=test -d -p=3306:3306 mysql/mysql-server:5.6
 
-Next, start an instance of the MySQL docker image that will use that data volume:
-
-    docker run --name openmrs-mysql --volumes-from mysql-data -v /var/lib/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=test -d -p=3306:3306 mysql/mysql-server:5.6
+Replace `<LOCAL_PATH>` with a path on your local OS that can be accessed by the docker-machine. While this volume mapping is not required, doing this will allow the data to be retained across restarts. Note that this command may not work properly when run in OS X due to a permissions error unless [docker-machine-nfs](https://github.com/adlogix/docker-machine-nfs) is used.
 
 ###### Note that there are different security options for the MySQL accounts. See [here](https://hub.docker.com/r/mysql/mysql-server/) for more information.
 
@@ -51,6 +51,12 @@ Once the OpenMRS image has finished loading (look for a line like: `INFO: Server
 
 1. Via `localhost` on mapped port. Note that some host OS's will require port mapping in the VM for this to work correctly via localhost.
 2. Via the image's ip address on the mapped port. The image ip address can be found via `docker-machine ip default` (though this might be specific to OS X).
+
+All instances with demo data have the following users (username:password):
+
+* Super User - admin:Admin123
+* Inventory User - inventory:Inventory123
+* Cashier User - cashier:Cashier123
 
 ## Environment Variables
 
@@ -89,6 +95,10 @@ The MySQL account password for the OpenMRS user account. If not defined this wil
 ### OPENMRS_DATABASE_SCRIPT
 
 The full path and file name to the compressed (zipped) database population script. If not defined the demo data for the specified image will be used.
+
+### EXCLUDE_OPENHMIS
+
+Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
 
 # User Feedback
 
