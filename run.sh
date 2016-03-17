@@ -90,6 +90,7 @@ fi
 
 # ------------ End Load Database ------------
 
+if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
 # ------------ Begin Download OpenHMIS Modules -----------------
 
 echo "Downloading current OpenHMIS modules..."
@@ -127,6 +128,7 @@ echo "OpenHMIS modules downloaded."
 cp ${DOWNLOAD_DIR}/*.omod ${OPENMRS_MODULES}/
 
 # ------------ End Download OpenHMIS Modules -----------------
+fi
 
 # Cleanup temp files
 rm -r /root/temp

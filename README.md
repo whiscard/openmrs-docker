@@ -26,13 +26,11 @@ The `latest` tag will always be the image for the last released platform with th
 
 ## Setting up MySQL
 
-This image assumes that MySQL will be running in separate server or another image. To set up a MySQL instance via docker, first create a docker data value for the MySQL data files:
+This image assumes that MySQL will be running in separate server or another image. To set up a MySQL instance via docker:
 
-    docker create --name mysql-data arungupta/mysql-data-container
+    docker run --name openmrs-mysql -v <LOCAL_PATH>:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=test -d -p=3306:3306 mysql/mysql-server:5.6
 
-Next, start an instance of the MySQL docker image that will use that data volume:
-
-    docker run --name openmrs-mysql --volumes-from mysql-data -v /var/lib/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=test -d -p=3306:3306 mysql/mysql-server:5.6
+Replace `<LOCAL_PATH>` with a path on your local OS that can be accessed by the docker-machine. While this volume mapping is not required, doing this will allow the data to be retained across restarts. Note that this command may not work properly when run in OS X due to a permissions error unless [docker-machine-nfs](https://github.com/adlogix/docker-machine-nfs) is used.
 
 ###### Note that there are different security options for the MySQL accounts. See [here](https://hub.docker.com/r/mysql/mysql-server/) for more information.
 
@@ -53,6 +51,12 @@ Once the OpenMRS image has finished loading (look for a line like: `INFO: Server
 
 1. Via `localhost` on mapped port. Note that some host OS's will require port mapping in the VM for this to work correctly via localhost.
 2. Via the image's ip address on the mapped port. The image ip address can be found via `docker-machine ip default` (though this might be specific to OS X).
+
+All instances with demo data have the following users (username:password):
+
+* Super User - admin:Admin123
+* Inventory User - inventory:Inventory123
+* Cashier User - cashier:Cashier123
 
 ## Environment Variables
 
@@ -91,6 +95,10 @@ The MySQL account password for the OpenMRS user account. If not defined this wil
 ### OPENMRS_DATABASE_SCRIPT
 
 The full path and file name to the compressed (zipped) database population script. If not defined the demo data for the specified image will be used.
+
+### EXCLUDE_OPENHMIS
+
+Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
 
 # User Feedback
 
