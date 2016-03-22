@@ -69,7 +69,26 @@ else
         do
             mysql -h $OPENMRS_MYSQL_HOST -P $OPENMRS_MYSQL_PORT -u $DB_USER --password=$DB_PASS ${DB_NAME}  < $script
         done
+        rm /root/temp/db/*.sql
         echo "Demo data loaded."
+
+        # ------------ Begin Load OpenHMIS Demo Data -----------------
+
+       if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
+           echo "Loading OpenHMIS demo data..."
+           unzip -j ${OPENHMIS_LOCAL_DATABASE_SCRIPT_PATH} -d /root/temp/db/
+           SCRIPTS=/root/temp/db/*.sql
+
+           for script in $SCRIPTS
+           do
+               mysql -h $OPENMRS_MYSQL_HOST -P $OPENMRS_MYSQL_PORT -u $DB_USER --password=$DB_PASS ${DB_NAME}  < $script
+           done
+
+           rm /root/temp/db/*.sql
+           echo "Demo OpenHMIS data loaded."
+       fi
+
+       # ------------ End Download OpenHMIS Demo Data -----------------
     fi
 
     # Create OpenMRS db user
@@ -91,42 +110,43 @@ fi
 # ------------ End Load Database ------------
 
 # ------------ Begin Download OpenHMIS Modules -----------------
+if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
+    echo "Downloading current OpenHMIS modules..."
 
-echo "Downloading current OpenHMIS modules..."
+    # Setup Variables
+    DOWNLOAD_DIR=/root/temp/modules/openhmis
+    TEAMCITY_URL="http://build.openhmisafrica.org/teamcity"
+    TEAMCITY_REST_ARTIFACT_URL="$TEAMCITY_URL/guestAuth/app/rest/builds/buildType:BUILD_TYPE/artifacts/children/"
+    ARTIFACT_XPATH="string(/files/file/content/@href)"
 
-# Setup Variables
-DOWNLOAD_DIR=/root/temp/modules/openhmis
-TEAMCITY_URL="http://build.openhmisafrica.org/teamcity"
-TEAMCITY_REST_ARTIFACT_URL="$TEAMCITY_URL/guestAuth/app/rest/builds/buildType:BUILD_TYPE/artifacts/children/"
-ARTIFACT_XPATH="string(/files/file/content/@href)"
+    MODULE_PROJECT_NAMES=("commons_prod" "bbf_prod" "inv_prod" "cash_prod")
 
-MODULE_PROJECT_NAMES=("commons_prod" "bbf_prod" "inv_prod" "cash_prod")
+    # Clear openhmis module folder
+    mkdir -p ${DOWNLOAD_DIR}
+    rm ${DOWNLOAD_DIR}/*.omod
 
-# Clear openhmis module folder
-mkdir -p ${DOWNLOAD_DIR}
-rm ${DOWNLOAD_DIR}/*.omod
+    # Get current OpenHMIS module assets from TeamCity (master)
+    for mod in "${MODULE_PROJECT_NAMES[@]}"
+    do
+        # Get artifact file list
+        wget ${TEAMCITY_REST_ARTIFACT_URL/BUILD_TYPE/$mod} -O /root/temp/files.xml
 
-# Get current OpenHMIS module assets from TeamCity (master)
-for mod in "${MODULE_PROJECT_NAMES[@]}"
-do
-    # Get artifact file list
-    wget ${TEAMCITY_REST_ARTIFACT_URL/BUILD_TYPE/$mod} -O /root/temp/files.xml
+        # Extract the omod file name (this should be the only artifact)
+        FILE_URL=$(eval "xmllint --xpath '$ARTIFACT_XPATH' /root/temp/files.xml")
 
-    # Extract the omod file name (this should be the only artifact)
-    FILE_URL=$(eval "xmllint --xpath '$ARTIFACT_XPATH' /root/temp/files.xml")
+        # Get the omod artifact
+        wget $TEAMCITY_URL$FILE_URL -P ${DOWNLOAD_DIR}
 
-    # Get the omod artifact
-    wget $TEAMCITY_URL$FILE_URL -P ${DOWNLOAD_DIR}
+        # Cleanup
+        rm /root/temp/files.xml
+    done
 
-    # Cleanup
-    rm /root/temp/files.xml
-done
+    echo "OpenHMIS modules downloaded."
 
-echo "OpenHMIS modules downloaded."
+    cp ${DOWNLOAD_DIR}/*.omod ${OPENMRS_MODULES}/
 
-cp ${DOWNLOAD_DIR}/*.omod ${OPENMRS_MODULES}/
-
-# ------------ End Download OpenHMIS Modules -----------------
+    # ------------ End Download OpenHMIS Modules -----------------
+fi
 
 # Cleanup temp files
 rm -r /root/temp
