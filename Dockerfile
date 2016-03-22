@@ -8,6 +8,9 @@ ENV OPENMRS_REFERENCE_VERSION="2.3.1"
 ENV OPENMRS_REFERENCE_URL="http://sourceforge.net/projects/openmrs/files/releases/OpenMRS_2.3.1/openmrs-2.3.1-modules.zip/download"
 ENV DATABASE_SCRIPT_FILE="openmrs_1.11.5_2.3.1.sql.zip"
 ENV DATABASE_SCRIPT_PATH="db/${DATABASE_SCRIPT_FILE}"
+ENV OPENHMIS_DATABASE_SCRIPT_FILE="openhmis_demo_data_2.x.sql.zip"
+ENV OPENHMIS_DATABASE_SCRIPT_PATH="db/${OPENHMIS_DATABASE_SCRIPT_FILE}"
+ENV OPENHMIS_LOCAL_DATABASE_SCRIPT_PATH="/root/temp/db/${OPENHMIS_DATABASE_SCRIPT_FILE}"
 
 ENV DEFAULT_DB_NAME="openmrs_1_11_5_ref_2_3_1"
 ENV DEFAULT_OPENMRS_DB_USER="openmrs_user"
@@ -36,6 +39,9 @@ COPY openmrs-runtime.properties /root/temp/
 
 # Copy default database script
 COPY ${DATABASE_SCRIPT_PATH} /root/temp/db/
+
+# Copy OpenHMIS database script
+COPY ${OPENHMIS_DATABASE_SCRIPT_PATH} /root/temp/db/
 
 EXPOSE 8080
 
