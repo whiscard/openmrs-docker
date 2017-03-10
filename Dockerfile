@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y mysql-client libxml2-utils \
     && mkdir -p ${OPENMRS_MODULES}
 
 # Copy OpenHMIS dependencies
-COPY modules/dependencies/1.x/*.omod ${OPENMRS_MODULES}/
+COPY modules/dependencies/1.x/*.omod /root/temp/modules/
 
 # Copy OpenMRS properties file
 COPY openmrs-runtime.properties /root/temp/
@@ -38,6 +38,9 @@ COPY ${DATABASE_SCRIPT_PATH} /root/temp/db/
 
 # Copy OpenHMIS database script
 COPY ${OPENHMIS_DATABASE_SCRIPT_PATH} /root/temp/db/
+
+# Expose the openmrs directory as a volume
+VOLUME /root/.OpenMRS/
 
 EXPOSE 8080
 

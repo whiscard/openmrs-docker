@@ -49,6 +49,12 @@ else
 
     # ------------ End Configure Variables -----------------
 
+    # Ensure mysql is up
+    while ! mysqladmin ping -h"$OPENMRS_MYSQL_HOST" -P $OPENMRS_MYSQL_PORT --silent; do
+        echo "Waiting for database at '$OPENMRS_MYSQL_HOST:$OPENMRS_MYSQL_PORT'..."
+        sleep 2
+    done
+
     # Check if the database already exists. If it does then do not create or import data but do ensure that the user has access
     if mysql -h $OPENMRS_MYSQL_HOST -P $OPENMRS_MYSQL_PORT -u $DB_USER --password=$DB_PASS -e "USE ${DB_NAME}"; then
         echo "Database '${DB_NAME}' already exists. Skipping database creation and import."
@@ -109,6 +115,12 @@ fi
 
 # ------------ End Load Database ------------
 
+# Copy base/dependency modules to module folder
+echo "Copying module dependencies..."
+mkdir -pv $OPENMRS_MODULES
+cp /root/temp/modules/*.omod $OPENMRS_MODULES
+echo "Modules copied."
+
 # ------------ Begin Download OpenHMIS Modules -----------------
 if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
     echo "Downloading current OpenHMIS modules..."
@@ -122,7 +134,7 @@ if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
     MODULE_PROJECT_NAMES=("commons_prod" "bbf_prod" "inv_prod" "cash_prod")
 
     # Clear openhmis module folder
-    mkdir -p ${DOWNLOAD_DIR}
+    mkdir -pv ${DOWNLOAD_DIR}
     rm ${DOWNLOAD_DIR}/*.omod
 
     # Get current OpenHMIS module assets from TeamCity (master)
@@ -152,6 +164,9 @@ fi
 rm -r /root/temp
 
 fi
+
+# Set custom memory options for tomcat
+export JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms256m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
 
 # Run tomcat
 catalina.sh run
