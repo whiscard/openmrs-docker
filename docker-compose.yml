@@ -1,0 +1,35 @@
+version: '2'
+services:
+    openhmis:
+        image: openhmis/openmrs-docker
+        restart: unless-stopped
+        environment:
+            - DB_NAME=openmrs_1_11_6
+            - DEMO_DATA=1
+            - DB_USER=root
+            - DB_PASS=test
+            -
+        depends_on:
+            - start_dependencies
+        links:
+            - openhmis_mysql:mysql
+        ports:
+            - 9999:8080
+        volumes:
+            - ./openmrs:/root/.OpenMRS
+
+    start_dependencies:
+        image: dadarek/wait-for-dependencies
+        depends_on:
+            - openhmis_mysql
+        command: mysql:3306
+
+    openhmis_mysql:
+        image: mysql/mysql-server:5.6
+        environment:
+            - MYSQL_ROOT_PASSWORD=test
+            - MYSQL_ROOT_HOST=172.17.0.1    #Allow docker host to connect to mysql
+        ports:
+            - 3306:3306
+        volumes:
+            - ./mysql/data:/var/lib/mysql

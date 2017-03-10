@@ -92,4 +92,4 @@ The full path and file name to the compressed (zipped) database population scrip
 
 # User Feedback
 
-If you have any issues with this installation or comments/improvements, feel free to contact the OpenHMIS team  on [HipChat](https://www.hipchat.com/gHNSPJwzw) or on [OpenMRS Talk](https://talk.openmrs.org).
+If you have any issues with this installation or comments/improvements, feel free to contact the OpenHMIS team  on our [Chat](http://chat.openhmisafrica.org) or on [OpenMRS Talk](https://talk.openmrs.org).

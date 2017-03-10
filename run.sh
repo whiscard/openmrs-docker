@@ -51,7 +51,7 @@ else
 
     # Check if the database already exists. If it does then do not create or import data but do ensure that the user has access
     if mysql -h $OPENMRS_MYSQL_HOST -P $OPENMRS_MYSQL_PORT -u $DB_USER --password=$DB_PASS -e "USE ${DB_NAME}"; then
-        echo "Database '${DB_NAME}' already exists. Database creation and import will not occur."
+        echo "Database '${DB_NAME}' already exists. Skipping database creation and import."
     else
         # Create database
         echo "Creating database..."
@@ -115,7 +115,7 @@ if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
 
     # Setup Variables
     DOWNLOAD_DIR=/root/temp/modules/openhmis
-    TEAMCITY_URL="http://build.openhmisafrica.org/teamcity"
+    TEAMCITY_URL="http://teamcity.openhmisafrica.org/"
     TEAMCITY_REST_ARTIFACT_URL="$TEAMCITY_URL/guestAuth/app/rest/builds/buildType:BUILD_TYPE/artifacts/children/"
     ARTIFACT_XPATH="string(/files/file/content/@href)"
 
