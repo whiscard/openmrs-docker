@@ -7,7 +7,7 @@ services:
             dockerfile: Dockerfile
         restart: unless-stopped
         environment:
-            - DB_NAME=openmrs_1_11_6
+            - DB_NAME=openmrs_docker
             - OPENMRS_MYSQL_HOST=openhmis_mysql
             - OPENMRS_MYSQL_PORT=3306
             # Uncomment to load demo data
