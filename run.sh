@@ -4,6 +4,22 @@
 if [ -d "/root/temp" ]; then
 # ------------ Begin Load Database ------------
 
+if [ -z ${OPENMRS_MYSQL_HOST+x} ]; then
+    OPENMRS_MYSQL_HOST=${MYSQL_PORT_3306_TCP_ADDR}
+fi
+echo "Using MySQL host: ${OPENMRS_MYSQL_HOST}"
+
+if [ -z ${OPENMRS_MYSQL_PORT+x} ]; then
+    OPENMRS_MYSQL_PORT=${MYSQL_PORT_3306_TCP_PORT}
+fi
+echo "Using MySQL port: ${OPENMRS_MYSQL_PORT}"
+
+# Ensure mysql is up
+while ! mysqladmin ping -h"$OPENMRS_MYSQL_HOST" -P $OPENMRS_MYSQL_PORT --silent; do
+    echo "Waiting for database at '$OPENMRS_MYSQL_HOST:$OPENMRS_MYSQL_PORT'..."
+    sleep 2
+done
+
 # Only set these variables if we're loading the demo data
 if [ -z ${DEMO_DATA+x} ]; then
     echo "Demo data will not be loaded (specify the DEMO_DATA parameter to load demo data).";
@@ -18,16 +34,6 @@ else
         echo "The mysql password parameter (DB_PASS) must be defined.";
         exit 1
     fi
-
-    if [ -z ${OPENMRS_MYSQL_HOST+x} ]; then
-        OPENMRS_MYSQL_HOST=${MYSQL_PORT_3306_TCP_ADDR}
-    fi
-    echo "Using MySQL host: ${OPENMRS_MYSQL_HOST}"
-
-    if [ -z ${OPENMRS_MYSQL_PORT+x} ]; then
-        OPENMRS_MYSQL_PORT=${MYSQL_PORT_3306_TCP_PORT}
-    fi
-    echo "Using MySQL port: ${OPENMRS_MYSQL_PORT}"
 
     if [ -z ${DB_NAME+x} ]; then
         DB_NAME=${DEFAULT_DB_NAME};
@@ -48,12 +54,6 @@ else
     fi
 
     # ------------ End Configure Variables -----------------
-
-    # Ensure mysql is up
-    while ! mysqladmin ping -h"$OPENMRS_MYSQL_HOST" -P $OPENMRS_MYSQL_PORT --silent; do
-        echo "Waiting for database at '$OPENMRS_MYSQL_HOST:$OPENMRS_MYSQL_PORT'..."
-        sleep 2
-    done
 
     # Check if the database already exists. If it does then do not create or import data but do ensure that the user has access
     if mysql -h $OPENMRS_MYSQL_HOST -P $OPENMRS_MYSQL_PORT -u $DB_USER --password=$DB_PASS -e "USE ${DB_NAME}"; then
@@ -162,7 +162,6 @@ fi
 
 # Cleanup temp files
 rm -r /root/temp
-
 fi
 
 # Set custom memory options for tomcat
