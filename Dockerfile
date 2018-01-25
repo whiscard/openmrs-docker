@@ -18,12 +18,20 @@ ENV DEFAULT_OPENMRS_DB_PASS="Openmrs123"
 ENV DEFAULT_OPENMRS_DATABASE_SCRIPT="${DATABASE_SCRIPT_FILE}"
 ENV DEFAULT_OPENMRS_DATABASE_SCRIPT_PATH="/root/temp/db/${DEFAULT_OPENMRS_DATABASE_SCRIPT}"
 
+ENV DEBIAN_MAIN_CONTRIB_SOURCE="deb http://ftp.us.debian.org/debian jessie main contrib"
+ENV DEBIAN_SOURCE_LIST_FILE="/etc/apt/sources.list"
+
+# Add the main contrib mirror for use when installing fonts package for Jasper Reports
+RUN echo ${DEBIAN_MAIN_CONTRIB_SOURCE} >> ${DEBIAN_SOURCE_LIST_FILE} 
+
 # Refresh repositories and add mysql-client and libxml2-utils (for xmllint)
+# Also add vim and less as well as fonts for use for Jasper Reports 
 # Download and Deploy OpenMRS
 # Download and copy reference application modules (if defined)
 # Unzip modules and copy to module/ref folder
 # Create database and setup openmrs db user
-RUN apt-get update && apt-get install -y mysql-client libxml2-utils \
+RUN apt-get update && apt-get install -y mysql-client libxml2-utils vim less \
+    ttf-mscorefonts-installer \
     && curl -L ${OPENMRS_PLATFORM_URL} -o ${CATALINA_HOME}/webapps/openmrs.war \
     && curl -L ${OPENMRS_REFERENCE_URL} -o ref.zip \
     && mkdir -p /root/temp/modules \
