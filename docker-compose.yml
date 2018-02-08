@@ -25,7 +25,7 @@ services:
 
     openhmis_mysql:
         container_name: openhmis_mysql
-        image: mysql/mysql-server:5.6
+        image: mysql/mysql-server:5.7
         environment:
             - MYSQL_ROOT_PASSWORD=test
             - MYSQL_ROOT_HOST=172.%    # Allow docker contatiners to connect to mysql
