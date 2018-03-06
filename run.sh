@@ -165,7 +165,7 @@ rm -r /root/temp
 fi
 
 # Set custom memory options for tomcat
-export JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms256m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
+export JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms256m -Xmx1024m"
 
 # Run tomcat
 catalina.sh run
