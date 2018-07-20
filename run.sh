@@ -131,7 +131,7 @@ if [ -z ${EXCLUDE_OPENHMIS+x} ]; then
     TEAMCITY_REST_ARTIFACT_URL="$TEAMCITY_URL/guestAuth/app/rest/builds/buildType:BUILD_TYPE/artifacts/children/"
     ARTIFACT_XPATH="string(/files/file/content/@href)"
 
-    MODULE_PROJECT_NAMES=("commons_prod" "bbf_prod" "inv_prod" "cash_prod")
+    MODULE_PROJECT_NAMES=("commons_prod" "bbf_prod" "inv_prod" "cash_prod" "jasper_prod")
 
     # Clear openhmis module folder
     mkdir -pv ${DOWNLOAD_DIR}
