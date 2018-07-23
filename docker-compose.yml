@@ -19,12 +19,12 @@ services:
     links:
       - openhmis_mysql:mysql
     ports:
-      - 9922:8080
+      - 9901:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs/"]
       timeout: 20s
-    #volumes:
-      #- ./openmrs:/root/.OpenMRS
+    volumes:
+      - openmrs:/root/.OpenMRS
 
   openhmis_mysql:
     container_name: openhmis_mysql
@@ -41,3 +41,4 @@ services:
       - openhmis_mysql_volume:/var/lib/mysql
 volumes:
   openhmis_mysql_volume:
+  openmrs:
