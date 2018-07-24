@@ -1,37 +1,44 @@
 version: '3'
 services:
-    openhmis:
-        container_name: openhmis_openmrs
-        build:
-            context: .
-            dockerfile: Dockerfile
-        restart: unless-stopped
-        environment:
-            - DB_NAME=openmrs_docker
-            - OPENMRS_MYSQL_HOST=openhmis_mysql
-            - OPENMRS_MYSQL_PORT=3306
-            # Uncomment to load demo data
-            #- DEMO_DATA=1
-            #- DB_USER=root
-            #- DB_PASS=test
-        depends_on:
-            - openhmis_mysql
-        links:
-            - openhmis_mysql:mysql
-        ports:
-            - 8080:8080
-        volumes:
-            - ./openmrs:/root/.OpenMRS
+  openhmis:
+    container_name: openhmis_openmrs
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      - DB_NAME=openmrs_docker
+      - OPENMRS_MYSQL_HOST=openhmis_mysql
+      - OPENMRS_MYSQL_PORT=3306
+      # Uncomment to load demo data
+      - DEMO_DATA=1
+      - DB_USER=root
+      - DB_PASS=test
+      - EXCLUDE_OPENHMIS=1
+    depends_on:
+      - openhmis_mysql
+    links:
+      - openhmis_mysql:mysql
+    ports:
+      - 9901:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs/"]
+      timeout: 20s
+    volumes:
+      - openmrs:/root/.OpenMRS
 
-    openhmis_mysql:
-        container_name: openhmis_mysql
-        image: mysql/mysql-server:5.6
-        environment:
-            - MYSQL_ROOT_PASSWORD=test
-            - MYSQL_ROOT_HOST=172.%    # Allow docker contatiners to connect to mysql
-        ports:
-            - 3306:3306
-        volumes:
-            - openhmis_mysql_volume:/var/lib/mysql
+  openhmis_mysql:
+    container_name: openhmis_mysql
+    image: mysql/mysql-server:5.6
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_ROOT_HOST=172.%    # Allow docker contatiners to connect to mysql
+    ports:
+      - 3309:3306
+    healthcheck:
+      test: "exit 0"
+    volumes:
+      - openhmis_mysql_volume:/var/lib/mysql
 volumes:
-    openhmis_mysql_volume:
+  openhmis_mysql_volume:
+  openmrs:
