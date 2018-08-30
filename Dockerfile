@@ -1,4 +1,4 @@
-FROM tomcat:8.5-jre8-alpine
+FROM tomcat:7.0-jre8-alpine
 
 ENV OPENMRS_HOME /root/.OpenMRS
 ENV OPENMRS_MODULES ${OPENMRS_HOME}/modules
@@ -28,7 +28,7 @@ RUN apk update && apk add mysql-client && apk add libxml2-utils && apk add curl 
     && curl -L ${OPENMRS_PLATFORM_URL} -o ${CATALINA_HOME}/webapps/openmrs.war \
     && curl -L ${OPENMRS_REFERENCE_URL} -o ref.zip \
     && mkdir -p /root/temp/modules \
-    && unzip -j ref.zip -d /root/temp/modules/ 
+    && unzip -j ref.zip -d /root/temp/modules/
 
 # Copy OpenHMIS dependencies
 #COPY modules/dependencies/2.x/*.omod /root/temp/modules/
