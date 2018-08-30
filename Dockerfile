@@ -11,6 +11,7 @@ ENV DATABASE_SCRIPT_PATH="db/${DATABASE_SCRIPT_FILE}"
 ENV OPENHMIS_DATABASE_SCRIPT_FILE="openhmis_demo_data_2.x.sql.zip"
 ENV OPENHMIS_DATABASE_SCRIPT_PATH="db/${OPENHMIS_DATABASE_SCRIPT_FILE}"
 ENV OPENHMIS_LOCAL_DATABASE_SCRIPT_PATH="/root/temp/db/${OPENHMIS_DATABASE_SCRIPT_FILE}"
+ENV OPENHMIS_ROOT_REDIRECT_FILE="index.jsp"
 
 ENV DEFAULT_DB_NAME="openmrs_2_1_3_ref_2_8_0"
 ENV DEFAULT_OPENMRS_DB_USER="openmrs_user"
@@ -27,7 +28,7 @@ RUN apk update && apk add mysql-client && apk add libxml2-utils && apk add curl 
     && curl -L ${OPENMRS_PLATFORM_URL} -o ${CATALINA_HOME}/webapps/openmrs.war \
     && curl -L ${OPENMRS_REFERENCE_URL} -o ref.zip \
     && mkdir -p /root/temp/modules \
-    && unzip -j ref.zip -d /root/temp/modules/
+    && unzip -j ref.zip -d /root/temp/modules/ 
 
 # Copy OpenHMIS dependencies
 #COPY modules/dependencies/2.x/*.omod /root/temp/modules/
@@ -40,6 +41,9 @@ COPY ${DATABASE_SCRIPT_PATH} /root/temp/db/
 
 # Copy OpenHMIS database script
 COPY ${OPENHMIS_DATABASE_SCRIPT_PATH} /root/temp/db/
+
+# Copy the OpenMRS Redirect Script
+COPY ${OPENHMIS_ROOT_REDIRECT_FILE} ${CATALINA_HOME}/webapps/ROOT/
 
 # Expose the openmrs directory as a volume
 VOLUME /root/.OpenMRS/
