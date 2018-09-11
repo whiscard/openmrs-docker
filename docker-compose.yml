@@ -1,46 +1,51 @@
 version: '3'
 services:
-  openhmis:
-    container_name: openhmis_openmrs
-    image: openhmis/openmrs-docker:latest
+  openhmis_imed:
+    container_name: openhmis_imed
+    #image: openhmis/openmrs-docker:latest
     #uncomment below to build image and comment out the above image line
-    #build:
-    #  context: .
+    build:
+      context: .
     restart: unless-stopped
     environment:
-      - DB_NAME=openmrs
-      - OPENMRS_MYSQL_HOST=openhmis_mysql
+      - DB_NAME=openmrs_imed
+      - OPENMRS_MYSQL_HOST=openhmis_mysql_imed
       - OPENMRS_MYSQL_PORT=3306
       # Uncomment to load demo data
       - DEMO_DATA=1
       - DB_USER=root
-      - DB_PASS=aivu7Jeziicha4UNgain
-      #- EXCLUDE_OPENHMIS=1
+      - DB_PASS=vimah8iQuien9ikini2M
+      - EXCLUDE_OPENHMIS=1
     depends_on:
-      - openhmis_mysql
+      - openhmis_mysql_imed
     links:
-      - openhmis_mysql:mysql
+      - openhmis_mysql_imed:mysql
     ports:
-      - 9901:8080
+      - 9802:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs/"]
       timeout: 20s
     volumes:
-      - openmrs:/root/.OpenMRS
+      - openmrs_imed:/root/.OpenMRS
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
-  openhmis_mysql:
-    container_name: openhmis_mysql
-    image: mysql/mysql-server:5.7
+  openhmis_mysql_imed:
+    container_name: openhmis_mysql_imed
+    image: mysql/mysql-server:5.6
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=aivu7Jeziicha4UNgain
+      - MYSQL_ROOT_PASSWORD=vimah8iQuien9ikini2M
       - MYSQL_ROOT_HOST=172.%    # Allow docker contatiners to connect to mysql
     ports:
-      - 3309:3306
+      - 3311:3306
     healthcheck:
       test: "exit 0"
     volumes:
-      - openhmis_mysql_volume:/var/lib/mysql
+      - openhmis_imed_mysql_volume:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    command: ['mysqld', '--character-set-server=utf8', '--collation-server=utf8_general_ci']
 volumes:
-  openhmis_mysql_volume:
-  openmrs:
+  openhmis_imed_mysql_volume:
+  openmrs_imed:
