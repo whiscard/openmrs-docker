@@ -21,6 +21,18 @@ The `latest` tag will always be the image for the last released platform with th
 
 # How to Use the OpenHMIS Images using docker-compose
 
+## EXAMPLE (in summary):
+
+1. Install docker
+2. Install docker-compose
+3. Clone [this](https://github.com/OpenHMIS/openmrs-docker) repo to your local environment i.e `git clone https://github.com/OpenHMIS/openmrs-docker`
+4. `cd openmrs-docker`
+5. `docker-compose up -d` - this installs and configures both the openmrs and mysql containers. 
+6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp i.e `http://localhost:9802/openmrs`
+7. Use `docker-compose stop` and `docker-compose start` to stop and start the containers respectively.
+
+# To customize your docker-compose settings
+
 ## Edit the docker-compose.yml file
 
 There are a number of Environment Variables to set in the docker compose file, namely:
@@ -122,6 +134,10 @@ If you want to destroy all the data, containers and images, the run this command
 
 For more instruction on the options for docker-compose, you can run the docker-compose --help option
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Alternative docker run instructions
+
 ## How to Use the OpenHMIS Images Using docker run
 
 ### Setting up MySQL
@@ -199,16 +215,6 @@ The full path and file name to the compressed (zipped) database population scrip
 #### EXCLUDE_OPENHMIS
 
 Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
-
-# EXAMPLE (in summary):
-
-1. Install docker
-2. Install docker-compose
-3. Clone [this](https://github.com/OpenHMIS/openmrs-docker) repo to your local environment i.e `git clone https://github.com/OpenHMIS/openmrs-docker`
-4. `cd openmrs-docker`
-5. `docker-compose up -d` - this installs and configures both the openmrs and mysql containers. 
-6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp i.e `http://localhost:9802/openmrs`
-7. Use `docker-compose stop` and `docker-compose start` to stop and start the containers respectively.
 
 # User Feedback
 
