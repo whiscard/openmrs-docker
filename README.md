@@ -100,6 +100,16 @@ The full path and file name to the compressed (zipped) database population scrip
 
 Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
 
+# EXAMPLE (in summary):
+
+1. Install docker
+2. Install docker-compose
+3. Clone [this](https://github.com/OpenHMIS/openmrs-docker) repo to your local environment i.e `git clone https://github.com/OpenHMIS/openmrs-docker`
+4. `cd openmrs-docker`
+5. `docker-compose up -d` - this installs and configures both the openmrs and mysql containers. 
+6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp i.e `http://localhost:9802/openmrs`
+7. Use `docker-compose stop` and `docker-compose start` to stop and start the containers respectively.
+
 # User Feedback
 
 If you have any issues with this installation or comments/improvements, feel free to contact the OpenHMIS team  on [HipChat](https://www.hipchat.com/gHNSPJwzw) or on [OpenMRS Talk](https://talk.openmrs.org).
