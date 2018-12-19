@@ -105,7 +105,8 @@ The name to use for the OpenMRS database. If not defined this will be set to the
 Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
 
 ### Limit the memory and cpu resources that the containers use
-Default is 50% of CPU; 2GB of RAM and 4GB of swap respectively:
+
+    Default is 50% of CPU; 2GB of RAM and 4GB of swap respectively:
     cpu_percent: 50
     cpus: 0.5
     mem_limit: 2000000000
