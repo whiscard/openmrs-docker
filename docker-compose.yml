@@ -1,59 +1,51 @@
-version: '2.2'
+version: '3'
 services:
-  openhmis:
-    container_name: openhmis_openmrs
-    image: openhmis/openmrs-docker:latest
+  bandahealth_bk_service:
+    container_name: bandahealth_bk
+    #image: openhmis/openmrs-docker:bk
     #uncomment below to build image and comment out the above image line
-    #build:
-    #  context: .
+    build:
+      context: .
     restart: unless-stopped
     environment:
       - DB_NAME=openmrs
-      - OPENMRS_MYSQL_HOST=openhmis_mysql
+      - OPENMRS_MYSQL_HOST=bandahealth_bk_mysql
       - OPENMRS_MYSQL_PORT=3306
       # Uncomment to load demo data
       - DEMO_DATA=1
       - DB_USER=root
-      - DB_PASS=aivu7Jeziicha4UNgain
-      #- EXCLUDE_OPENHMIS=1
+      - DB_PASS=chahY7veeJang3Laishe
+      - EXCLUDE_OPENHMIS=1
     depends_on:
-      - openhmis_mysql
+      - bandahealth_bk_mysql_service
     links:
-      - openhmis_mysql:mysql
+      - bandahealth_bk_mysql_service:mysql
     ports:
       - 9901:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs/"]
       timeout: 20s
     volumes:
-      - openmrs:/root/.OpenMRS
+      - openmrs_bk_volume:/root/.OpenMRS
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    cpu_percent: 50
-    cpus: 0.5
-    mem_limit: 2000000000
-    memswap_limit: 4000000000
 
-  openhmis_mysql:
-    container_name: openhmis_mysql
-    image: mysql/mysql-server:5.7
+  bandahealth_bk_mysql_service:
+    container_name: bandahealth_bk_mysql
+    image: mysql/mysql-server:5.6
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=aivu7Jeziicha4UNgain
+      - MYSQL_ROOT_PASSWORD=chahY7veeJang3Laishe
       - MYSQL_ROOT_HOST=172.%    # Allow docker contatiners to connect to mysql
     ports:
-      - 3309:3306
+      - 3313:3306
     healthcheck:
       test: "exit 0"
     volumes:
-      - openhmis_mysql_volume:/var/lib/mysql
+      - bandahealth_bk_mysql_volume:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    cpu_percent: 50
-    cpus: 0.5
-    mem_limit: 2000000000
-    memswap_limit: 4000000000
 
 volumes:
-  openhmis_mysql_volume:
-  openmrs:
+  bandahealth_bk_mysql_volume:
+  openmrs_bk_volume:
