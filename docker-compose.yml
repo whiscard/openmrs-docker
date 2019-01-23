@@ -2,10 +2,10 @@ version: '3'
 services:
   bandahealth_bk_service:
     container_name: bandahealth_bk
-    #image: openhmis/openmrs-docker:bk
+    image: openhmis/openmrs-docker:bk
     #uncomment below to build image and comment out the above image line
-    build:
-      context: .
+    #build:
+    #  context: .
     restart: unless-stopped
     environment:
       - DB_NAME=openmrs
