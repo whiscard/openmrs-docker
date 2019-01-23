@@ -50,11 +50,11 @@ These 2 lines allow you to build your container. This is useful if you have made
 This is the docker restart policy. This will restart the docker container except in the case where it was stopped. You can see more information here: https://docs.docker.com/config/containers/start-containers-automatically/
 
 ### depends_on:
-- mysqlcontainername
+- MySQLContainerServiceName
 This is how docker compose will prioritize which container will start before the other. So in this case the mysql container needs to start before the openmrs container. NB You need to specify the same container name that you give the mysql container in your compose file.
 
 ### links:
-- mysqlcontainername:mysql
+- MySQLContainerServiceName:mysql
 This is how the openmrs container will obtain the IP of the mysql container. The :mysql is the mysql containers hostname and should not be changed. In the OpenMRS properties file, we give the mysql container's hostname as the connection string instead of hardcoding the initial mysql container's IP that may keep on changing. NB: This works well with mysql 5.6 and mysql 5.7 containers.
 
 ### ports:
@@ -142,7 +142,7 @@ For more instruction on the options for docker-compose, you can run the docker-c
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Alternative docker run instructions
+# Option 2: Using Docker Run Instead of Docker Compose
 
 ## How to Use the OpenHMIS Images Using docker run
 
