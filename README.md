@@ -45,6 +45,9 @@ Incase you want to pull from a pre-built container that is already in the docker
 build:
   context: .
 These 2 lines allow you to build your container. This is useful if you have made changes to any of the files in this repo for instance if you have made a change to the run.sh script then  you need to build the container for the changes to take effect. Remember to comment out the image line above since you are building a new container instead of pulling a pre-existing one.
+When you build you use the following docker-compose command: (The images will be built on the foreground)
+
+     docker-compose up --build 
     
 ### restart: unless-stopped
 This is the docker restart policy. This will restart the docker container except in the case where it was stopped. You can see more information here: https://docs.docker.com/config/containers/start-containers-automatically/
