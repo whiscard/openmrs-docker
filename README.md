@@ -26,7 +26,7 @@ The `latest` tag will always be the image for the last released platform with th
 1. Install docker
 2. Install docker-compose
 3. Create a directory where you will download the docker-compose file. After creating this directory, cd (change directory) to the created directory.
-4. Download the compose file: `curl https://raw.githubusercontent.com/OpenHMIS/openmrs-docker/master/docker-compose.yml -o docker-compose.yml`
+4. Download the compose file: `curl https://raw.githubusercontent.com/OpenHMIS/openmrs-docker/bk/docker-compose.yml -o docker-compose.yml`
 5. `docker-compose up -d` - this installs and configures both the openmrs and mysql containers. 
 6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp for instance `http://localhost:9901/openmrs`
 7. Use `docker-compose stop` and `docker-compose start` to stop and start the containers respectively.
@@ -45,6 +45,9 @@ Incase you want to pull from a pre-built container that is already in the docker
 build:
   context: .
 These 2 lines allow you to build your container. This is useful if you have made changes to any of the files in this repo for instance if you have made a change to the run.sh script then  you need to build the container for the changes to take effect. Remember to comment out the image line above since you are building a new container instead of pulling a pre-existing one.
+When you build you use the following docker-compose command: (The images will be built on the foreground)
+
+     docker-compose up --build
     
 ### restart: unless-stopped
 This is the docker restart policy. This will restart the docker container except in the case where it was stopped. You can see more information here: https://docs.docker.com/config/containers/start-containers-automatically/
