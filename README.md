@@ -21,19 +21,17 @@ The `latest` tag will always be the image for the last released platform with th
 
 # How to Use the OpenHMIS Images using docker-compose
 
-## EXAMPLE (in summary):
+## Summarized steps with our defined defaults
 
 1. Install docker
 2. Install docker-compose
-3. Clone [this](https://github.com/OpenHMIS/openmrs-docker) repo to your local environment i.e `git clone https://github.com/OpenHMIS/openmrs-docker`
-4. `cd openmrs-docker`
+3. Create a directory where you will download the docker-compose file. After creating this directory, cd (change directory) to the created directory.
+4. Download the compose file: `curl https://raw.githubusercontent.com/OpenHMIS/openmrs-docker/imed/docker-compose.yml -o docker-compose.yml`
 5. `docker-compose up -d` - this installs and configures both the openmrs and mysql containers. 
-6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp i.e `http://localhost:9802/openmrs`
+6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp for instance `http://localhost:9901/openmrs`
 7. Use `docker-compose stop` and `docker-compose start` to stop and start the containers respectively.
 
 # To customize your docker-compose settings
-
-## Edit the docker-compose.yml file
 
 There are a number of Environment Variables to set in the docker compose file, namely:
 
@@ -47,16 +45,19 @@ Incase you want to pull from a pre-built container that is already in the docker
 build:
   context: .
 These 2 lines allow you to build your container. This is useful if you have made changes to any of the files in this repo for instance if you have made a change to the run.sh script then  you need to build the container for the changes to take effect. Remember to comment out the image line above since you are building a new container instead of pulling a pre-existing one.
+When you build you use the following docker-compose command: (The images will be built on the foreground)
+
+    docker-compose up --build
     
 ### restart: unless-stopped
 This is the docker restart policy. This will restart the docker container except in the case where it was stopped. You can see more information here: https://docs.docker.com/config/containers/start-containers-automatically/
 
 ### depends_on:
-- mysqlcontainername
+- MySQLContainerServiceName
 This is how docker compose will prioritize which container will start before the other. So in this case the mysql container needs to start before the openmrs container. NB You need to specify the same container name that you give the mysql container in your compose file.
 
 ### links:
-- mysqlcontainername:mysql
+- MySQLContainerServiceName:mysql
 This is how the openmrs container will obtain the IP of the mysql container. The :mysql is the mysql containers hostname and should not be changed. In the OpenMRS properties file, we give the mysql container's hostname as the connection string instead of hardcoding the initial mysql container's IP that may keep on changing. NB: This works well with mysql 5.6 and mysql 5.7 containers.
 
 ### ports:
@@ -106,6 +107,14 @@ The name to use for the OpenMRS database. If not defined this will be set to the
 
 Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
 
+### Limit the memory and cpu resources that the containers use
+
+    Default is 50% of CPU; 2GB of RAM and 4GB of swap respectively:
+    cpu_percent: 50
+    cpus: 0.5
+    mem_limit: 2000000000
+    memswap_limit: 4000000000
+
 ### Create the openmrs and mysql containers using docker-compose
 
 This assumes you are in the directory from where you have copied over the files in this repository. So run the command. This will download the images if not present and start up the containers as defined in the docker-compose.yml file. This command will create the containers and start them.
@@ -136,7 +145,7 @@ For more instruction on the options for docker-compose, you can run the docker-c
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Alternative docker run instructions
+# Option 2: Using Docker Run Instead of Docker Compose
 
 ## How to Use the OpenHMIS Images Using docker run
 
