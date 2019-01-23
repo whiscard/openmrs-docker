@@ -21,19 +21,17 @@ The `latest` tag will always be the image for the last released platform with th
 
 # How to Use the OpenHMIS Images using docker-compose
 
-## EXAMPLE (in summary):
+## Summarized steps with our defined defaults
 
 1. Install docker
 2. Install docker-compose
-3. Clone [this](https://github.com/OpenHMIS/openmrs-docker) repo to your local environment i.e `git clone https://github.com/OpenHMIS/openmrs-docker`
-4. `cd openmrs-docker`
+3. Create a directory where you will download the docker-compose file. After creating this directory, cd (change directory) to the created directory.
+4. Download the compose file: `curl https://raw.githubusercontent.com/OpenHMIS/openmrs-docker/master/docker-compose.yml -o docker-compose.yml`
 5. `docker-compose up -d` - this installs and configures both the openmrs and mysql containers. 
-6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp i.e `http://localhost:9802/openmrs`
+6. Once the docker container is up and running, run `docker ps` - This will show you the active containers. Note the `port` number for the openmrs container and use it to access the webapp for instance `http://localhost:9901/openmrs`
 7. Use `docker-compose stop` and `docker-compose start` to stop and start the containers respectively.
 
 # To customize your docker-compose settings
-
-## Edit the docker-compose.yml file
 
 There are a number of Environment Variables to set in the docker compose file, namely:
 
@@ -105,6 +103,14 @@ The name to use for the OpenMRS database. If not defined this will be set to the
 ### EXCLUDE_OPENHMIS
 
 Tells the script to not download and install the OpenHMIS modules. This parameter simply needs to be set to something, the value does not matter.
+
+### Limit the memory and cpu resources that the containers use
+
+    Default is 50% of CPU; 2GB of RAM and 4GB of swap respectively:
+    cpu_percent: 50
+    cpus: 0.5
+    mem_limit: 2000000000
+    memswap_limit: 4000000000
 
 ### Create the openmrs and mysql containers using docker-compose
 

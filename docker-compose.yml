@@ -1,4 +1,4 @@
-version: '3'
+version: '2.2'
 services:
   openhmis:
     container_name: openhmis_openmrs
@@ -27,6 +27,12 @@ services:
       timeout: 20s
     volumes:
       - openmrs:/root/.OpenMRS
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    cpu_percent: 50
+    cpus: 0.5
+    mem_limit: 2000000000
+    memswap_limit: 4000000000
 
   openhmis_mysql:
     container_name: openhmis_mysql
@@ -41,6 +47,13 @@ services:
       test: "exit 0"
     volumes:
       - openhmis_mysql_volume:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    cpu_percent: 50
+    cpus: 0.5
+    mem_limit: 2000000000
+    memswap_limit: 4000000000
+
 volumes:
   openhmis_mysql_volume:
   openmrs:
